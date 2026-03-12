@@ -1,6 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
 
+import { db } from "./db/db.js";
+import { BacklogGameTable } from "./db/schema.js";
+
 dotenv.config();
 
 const app = express();
@@ -8,11 +11,9 @@ app.use(express.json());
 
 app.get("/", async (req, res) => {
   try {
-    const response = await fetch(
-      `https://api.rawg.io/api/games?search=${req.query.query}&key=${process.env.RAWG_KEY}`,
-    );
-    const data = await response.json();
-    res.json(data);
+    await db.insert(BacklogGameTable).values({ rawgId: 1 });
+    const game = await db.query.BacklogGameTable.findFirst();
+    res.json(game);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
