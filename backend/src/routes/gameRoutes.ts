@@ -1,26 +1,12 @@
 import { Router } from "express";
+import {
+  RawgGameDataInterface,
+  RawgSearchResultInterface,
+} from "../types/rawg.js";
 
 const router = Router();
 
 // Test RawgID: 3498 (GTA V)
-
-interface RawgSearchResultInterface {
-  results: RawgGameDataInterface[];
-}
-
-interface RawgGameDataInterface {
-  id: number;
-  name: string;
-  description: string;
-  released: string;
-  background_image: string;
-  platforms: {
-    platform: {
-      name: string;
-    };
-    released_at: string;
-  }[];
-}
 
 router.get("/search", async (req, res) => {
   const { query } = req.query;
@@ -40,7 +26,7 @@ router.get("/search", async (req, res) => {
     }));
 
     res.json(games);
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 });
@@ -62,7 +48,7 @@ router.get("/:rawgId", async (req, res) => {
       released: data.released,
       platforms: data.platforms.map((p) => p.platform.name),
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 });

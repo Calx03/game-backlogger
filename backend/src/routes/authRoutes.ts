@@ -20,7 +20,7 @@ router.post("/register", async (req, res) => {
       .returning({ username: UserTable.username, email: UserTable.email });
 
     res.json(result);
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 });
@@ -44,7 +44,7 @@ router.post("/login", async (req, res) => {
     if (result) {
       const accessToken = jwt.sign(
         { id: user[0].id, username: user[0].username },
-        process.env.ACCESS_TOKEN_SECRET,
+        process.env.ACCESS_TOKEN_SECRET as string,
         { expiresIn: "7d" },
       );
 
@@ -52,7 +52,7 @@ router.post("/login", async (req, res) => {
     } else {
       res.status(401).json({ error: "Invalid credentials" });
     }
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 });

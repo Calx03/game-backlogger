@@ -15,13 +15,13 @@ const authenticateUser = (req: Request, res: Response, next: NextFunction) => {
   try {
     const decodedToken = jwt.verify(
       token,
-      process.env.ACCESS_TOKEN_SECRET,
+      process.env.ACCESS_TOKEN_SECRET as string,
     ) as DecodedToken;
 
     req.user = { id: decodedToken.id, username: decodedToken.username };
 
     next();
-  } catch (err) {
+  } catch (err: any) {
     res.status(403).json({ error: err.message });
   }
 };
