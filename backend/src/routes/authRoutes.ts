@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 import { db } from "../db/db.js";
 import { UserTable } from "../db/schema.js";
@@ -41,9 +42,15 @@ router.post("/login", async (req, res) => {
     const result = await bcrypt.compare(password, user[0].password);
 
     if (result) {
-      res.json({ login: "success" });
+      const accessToken = jwt.sign(
+        { username: user[0].username },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "7d" },
+      );
+
+      res.json({ accessToken: accessToken });
     } else {
-      res.json({ login: "failed" });
+      res.status(401).json({ error: "Invalid credentials" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
