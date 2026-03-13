@@ -5,11 +5,22 @@ import jwt from "jsonwebtoken";
 
 import { db } from "../db/db.js";
 import { UserTable } from "../db/schema.js";
+import { registerSchema, loginSchema } from "../lib/schema/authSchemas.js";
+import { treeifyError } from "zod";
 
 const router = Router();
 
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
+
+  const parseResult = registerSchema.safeParse({ username, email, password });
+  if (!parseResult.success) {
+    console.log(treeifyError(parseResult.error).properties);
+    return res.status(400).json({
+      error: "Validation failed",
+      details: treeifyError(parseResult.error).properties,
+    });
+  }
 
   try {
     const hash = await bcrypt.hash(password, 10);
@@ -21,12 +32,22 @@ router.post("/register", async (req, res) => {
 
     res.json(result);
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    console.log(err.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+
+  const result = loginSchema.safeParse({ email, password });
+  if (!result.success) {
+    console.log(treeifyError(result.error).properties);
+    return res.status(400).json({
+      error: "Validation failed",
+      details: treeifyError(result.error).properties,
+    });
+  }
 
   try {
     const user = await db
@@ -53,7 +74,8 @@ router.post("/login", async (req, res) => {
       res.status(401).json({ error: "Invalid credentials" });
     }
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    console.log(err.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

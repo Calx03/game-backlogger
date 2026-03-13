@@ -27,7 +27,8 @@ router.get("/search", async (req, res) => {
 
     res.json(games);
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    console.log(err.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -49,7 +50,8 @@ router.get("/:rawgId", async (req, res) => {
       platforms: data.platforms.map((p) => p.platform.name),
     });
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    console.log(err.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

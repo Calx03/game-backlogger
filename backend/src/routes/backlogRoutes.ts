@@ -1,6 +1,3 @@
-// PATCH /api/backlog/:id — Update rating, status, notes
-// DELETE /api/backlog/:id — Remove a game from the backlog
-
 import { Router } from "express";
 import { db } from "../db/db.js";
 import { BacklogEntryTable, UserTable } from "../db/schema.js";
@@ -57,6 +54,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Update rating, status, notes
 router.patch("/:id", async (req, res) => {
   if (!req.user) return res.status(401).json({ error: "Unauthorised" });
 
@@ -81,6 +79,7 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
+// Remove a game from the backlog
 router.delete("/:id", async (req, res) => {
   if (!req.user) return res.status(401).json({ error: "Unauthorised" });
 
