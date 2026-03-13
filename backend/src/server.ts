@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 import gameRouter from "./routes/gameRoutes.js";
 import authRouter from "./routes/authRoutes.js";
+import authenticateUser from "./middleware/auth.js";
 
 dotenv.config();
 
