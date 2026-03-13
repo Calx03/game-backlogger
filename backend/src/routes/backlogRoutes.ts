@@ -2,6 +2,8 @@ import { Router } from "express";
 import { db } from "../db/db.js";
 import { BacklogEntryTable, UserTable } from "../db/schema.js";
 import { and, eq } from "drizzle-orm";
+import { newBacklogEntrySchema } from "../lib/schema/backlogSchemas.js";
+import { treeifyError } from "zod";
 
 const router = Router();
 
@@ -26,6 +28,20 @@ router.post("/", async (req, res) => {
   if (!req.user) return res.status(401).json({ error: "Unauthorised" });
 
   const { rawgId, status, rating, notes } = req.body;
+
+  const parsedResult = newBacklogEntrySchema.safeParse({
+    rawgId,
+    status,
+    rating,
+    notes,
+  });
+
+  if (!parsedResult.success) {
+    return res.status(400).json({
+      error: "Invalid request body",
+      details: treeifyError(parsedResult.error).properties,
+    });
+  }
 
   try {
     const existingEntry = await db
@@ -60,6 +76,20 @@ router.patch("/:id", async (req, res) => {
 
   const { status, rating, notes } = req.body;
   const id = parseInt(req.params.id);
+
+  const parsedResult = newBacklogEntrySchema.safeParse({
+    status,
+    rating,
+    notes,
+  });
+
+  if (!parsedResult.success) {
+    return res.status(400).json({
+      error: "Invalid request body",
+      details: treeifyError(parsedResult.error).properties,
+    });
+  }
+
   try {
     const updatedEntry = await db
       .update(BacklogEntryTable)
