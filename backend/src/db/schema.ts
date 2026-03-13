@@ -18,7 +18,9 @@ export const UserTable = pgTable("users", {
 export const BacklogGameTable = pgTable("games", {
   id: serial("id").primaryKey(),
   rawgId: integer("rawg_id"),
-  userId: integer("user_id"),
+  userId: integer("user_id")
+    .references(() => UserTable.id)
+    .notNull(),
   rating: integer("rating"),
   // status
   notes: text("notes"),
