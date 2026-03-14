@@ -27,10 +27,11 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   if (!req.user) return res.status(401).json({ error: "Unauthorised" });
 
-  const { rawgId, status, rating, notes } = req.body;
+  const { rawgId, background_image, status, rating, notes } = req.body;
 
   const parsedResult = newBacklogEntrySchema.safeParse({
     rawgId,
+    background_image,
     status,
     rating,
     notes,
@@ -60,7 +61,14 @@ router.post("/", async (req, res) => {
 
     const entry = await db
       .insert(BacklogEntryTable)
-      .values({ rawgId, status, rating, notes, userId: req.user.id })
+      .values({
+        rawgId,
+        background_image,
+        status,
+        rating,
+        notes,
+        userId: req.user.id,
+      })
       .returning();
 
     res.json(entry);

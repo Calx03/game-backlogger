@@ -5,6 +5,7 @@ import * as z from "zod";
 
 export const newBacklogEntrySchema = z.object({
   rawgId: z.number().int().positive(),
+  background_image: z.string().optional().nullable(),
   status: z.enum(["backlog", "playing", "completed", "dropped"]),
   rating: z.number().int().min(1).max(10).optional().nullable(),
   notes: z.string().optional().nullable(),

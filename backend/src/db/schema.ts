@@ -29,6 +29,7 @@ export const BacklogEntryTable = pgTable("backlog_entries", {
   userId: integer("user_id")
     .references(() => UserTable.id)
     .notNull(),
+  background_image: text("background_image"),
   rating: integer("rating"),
   status: gameStatus("status").notNull(),
   notes: text("notes"),
