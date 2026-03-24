@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 
 import gameRouter from "./routes/gameRoutes.js";
 import authRouter from "./routes/authRoutes.js";
@@ -11,10 +12,12 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.use(cors());
+
 app.use("/api/games", gameRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/backlog", authenticateUser, backlogRouter);
 
-app.listen(3000, () => {
-  console.log("Server is listening on port: 3000");
+app.listen(4000, () => {
+  console.log("Server is listening on port: 4000");
 });
