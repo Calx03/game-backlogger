@@ -69,7 +69,12 @@ router.post("/login", async (req, res) => {
         { expiresIn: "7d" },
       );
 
-      res.json({ accessToken: accessToken });
+      res.json({
+        token: accessToken,
+        id: user[0].id,
+        username: user[0].username,
+        email: user[0].email,
+      });
     } else {
       res.status(401).json({ error: "Invalid credentials" });
     }

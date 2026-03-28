@@ -1,16 +1,21 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
+import { TanStackDevtools } from '@tanstack/react-devtools';
 
-import '../styles.css'
+import '../styles.css';
+import { AuthProvider, type AuthInterface } from '#/contexts/authContext';
 
-export const Route = createRootRoute({
+interface RouteContext {
+  auth: AuthInterface;
+}
+
+export const Route = createRootRouteWithContext<RouteContext>()({
   component: RootComponent,
-})
+});
 
 function RootComponent() {
   return (
-    <>
+    <AuthProvider>
       <Outlet />
       <TanStackDevtools
         config={{
@@ -23,6 +28,6 @@ function RootComponent() {
           },
         ]}
       />
-    </>
-  )
+    </AuthProvider>
+  );
 }
