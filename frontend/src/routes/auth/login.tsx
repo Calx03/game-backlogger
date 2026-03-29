@@ -1,15 +1,25 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { useAuth } from "../contexts/authContext";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/auth/login")({
   component: LoginComponent,
 });
+
+interface LoginResponseInterface {
+  token: string;
+  id: number;
+  email: string;
+  username: string;
+}
 
 type FormData = {
   email: string;
   password: string;
 };
 
+// TODO: Zod validation, error handling.
 function LoginComponent() {
   const {
     register,
@@ -17,8 +27,30 @@ function LoginComponent() {
     formState: { errors },
   } = useForm<FormData>();
 
+  const { login, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate({ to: "/" });
+    }
+  }, [isAuthenticated]);
+
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    // TODO: Login logic
+    const response = await fetch("http://localhost:4000/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const json = (await response.json()) as LoginResponseInterface;
+
+    await login(json.token);
   };
 
   return (

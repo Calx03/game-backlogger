@@ -1,7 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  beforeLoad(ctx) {
+    if (!ctx.context.auth.isAuthenticated) {
+      throw redirect({
+        to: "/auth/login",
+      });
+    }
+  },
 });
 
 function Index() {

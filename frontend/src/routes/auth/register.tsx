@@ -16,6 +16,7 @@ interface RegisterResponse {
   email: string;
 }
 
+// TODO: Zod validation, error handling.
 function RegisterComponent() {
   const {
     register,

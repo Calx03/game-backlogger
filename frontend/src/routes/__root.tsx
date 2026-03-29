@@ -1,5 +1,10 @@
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import type { useAuth } from "./contexts/authContext";
+
+interface RouterContext {
+  auth: ReturnType<typeof useAuth>;
+}
 
 const RootLayout = () => (
   <>
@@ -8,4 +13,6 @@ const RootLayout = () => (
   </>
 );
 
-export const Route = createRootRoute({ component: RootLayout });
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: RootLayout,
+});
