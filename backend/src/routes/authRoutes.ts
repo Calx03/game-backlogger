@@ -32,7 +32,14 @@ router.post("/register", async (req, res) => {
 
     res.json(result);
   } catch (err: any) {
-    console.log(err.message);
+    const code = err.code ?? err.cause?.code;
+
+    if (code === "23505") {
+      return res
+        .status(409)
+        .json({ error: "An account with this email already exists" });
+    }
+
     res.status(500).json({ error: "Internal server error" });
   }
 });
